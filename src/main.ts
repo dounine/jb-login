@@ -3,12 +3,11 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import installElementPlus from './plugins/element.js'
-import axios from './plugins/axios'
 import './plugins/public-path.js'
 
 let app: any = null
 const render = (props) => {
-    app = createApp(App).use(store).use(router).use(axios)
+    app = createApp(App).use(store).use(router)
     if (props.token) {
         store.commit('setToken', props.token)
     }

@@ -17,37 +17,75 @@
           <div class="accountWrap">
             <div
               class="account"
-              :style="'color:' + theme + ';border-bottom:2px solid ' + theme"
+              @click="switchLoginType('password')"
+              :style="
+                loginType === 'password'
+                  ? 'color:' + theme + ';border-bottom:2px solid ' + theme
+                  : ''
+              "
             >
               帐号密码登录
             </div>
           </div>
-          <div class="accountWrap"><div class="account">手机号登录</div></div>
+          <div class="accountWrap">
+            <div
+              class="account"
+              @click="switchLoginType('message')"
+              :style="
+                loginType === 'message'
+                  ? 'color:' + theme + ';border-bottom:2px solid ' + theme
+                  : ''
+              "
+            >
+              手机号登录
+            </div>
+          </div>
         </el-row>
       </el-col>
       <el-col style="margin-top: 16px">
-        <el-row type="flex" justify="center">
-          <el-input
-            style="width: 400px"
-            placeholder="用户名"
-            prefix-icon="el-icon-user"
-            v-model="input2"
-          ></el-input>
-        </el-row>
-        <el-row style="margin-top: 24px" type="flex" justify="center">
-          <el-input
-            style="width: 400px"
-            placeholder="密码"
-            prefix-icon="el-icon-lock"
-            v-model="input2"
-          ></el-input>
-        </el-row>
+        <div v-if="loginType === 'password'">
+          <el-row type="flex" justify="center">
+            <el-input
+              style="width: 400px"
+              placeholder="用户名"
+              prefix-icon="el-icon-user"
+              v-model="input2"
+            ></el-input>
+          </el-row>
+          <el-row style="margin-top: 24px" type="flex" justify="center">
+            <el-input
+              style="width: 400px"
+              placeholder="密码"
+              prefix-icon="el-icon-lock"
+              v-model="input2"
+            ></el-input>
+          </el-row>
+        </div>
+        <div v-if="loginType === 'message'">
+          <el-row type="flex" justify="center">
+            <el-input
+              style="width: 400px"
+              placeholder="手机号"
+              prefix-icon="el-icon-mobile-phone"
+              v-model="input2"
+            ></el-input>
+          </el-row>
+          <el-row style="margin-top: 24px" type="flex" justify="center">
+            <el-input
+              style="width: 250px"
+              placeholder="验证码"
+              prefix-icon="el-icon-message"
+              v-model="input2"
+            ></el-input>
+            <el-button style="width: 140px; margin-left: 10px">获取验证码</el-button>
+          </el-row>
+        </div>
         <el-row style="margin-top: 10px" type="flex" justify="center">
           <div class="centerWidth">
             <el-row style="margin-top: 20px" type="flex" justify="space-between">
               <div><el-checkbox v-model="autoLogin">自动登录</el-checkbox></div>
               <div>
-                <router-link style="color: #52c41a" to="/user/forget"
+                <router-link class="forget" style="color: #52c41a" to="/user/forget"
                   >忘记密码</router-link
                 >
               </div>
@@ -72,7 +110,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import { mapState } from "vuex";
 export default {
   data() {
@@ -83,6 +121,14 @@ export default {
   },
   computed: {
     ...mapState(["theme"]),
+    loginType() {
+      return this.$route.params.loginType;
+    },
+  },
+  methods: {
+    switchLoginType(loginType) {
+      this.$router.push(`/${loginType}`);
+    },
   },
 };
 </script>

@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from "axios"
+import axios from "axios"
 
 // Full config:  https://github.com/axios/axios#request-config
 // axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || '';
@@ -162,11 +162,11 @@ if (window.__POWERED_BY_QIANKUN__) {
 // )
 
 export default {
-    install: function (app: any, options: any) {
+    // install: function (app: any, options: any) {
         // app.config.globalProperties.$axios = axios
         // app.config.globalProperties.$translate = (key: any) => {
         //     return key
         // }
-    },
+    // },
     request: axios.request
 }

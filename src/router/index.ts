@@ -3,10 +3,14 @@ import Login from '../views/Login.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '',
+    path: '/:loginType',
     name: 'Login',
     component: Login,
   },
+  {
+    path: '',
+    redirect: 'password'
+  }
 ]
 
 declare const window: any;
