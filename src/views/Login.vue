@@ -1,5 +1,8 @@
 <template>
   <div class="login">
+    <el-row style="height:100px" type="flex" justify="center">
+      
+    </el-row>
     <el-row type="flex" justify="center">
       <a style="logo-wrap">
         <img :src="logo" class="logo" />
@@ -138,8 +141,9 @@ export default {
   background-repeat: no-repeat;
   background-position: center 110px;
   background-size: 100%;
-  height: 100%;
-  padding: 40px;
+  height: 90vh;
+  margin:0;
+  padding:0;
 }
 .logo-wrap {
   height: 44px;
