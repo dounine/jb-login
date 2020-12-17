@@ -1,6 +1,8 @@
 const bodyParser = require('body-parser')
+const cors = require('cors')
 const Mock = (app) => {
     app.use(bodyParser.json())
+    app.use(cors())
     app.get('/user/info', function (req, res) {
         res.json({
             status: "ok",
@@ -21,7 +23,8 @@ const Mock = (app) => {
                 res.json({
                     status: 'ok',
                     data: {
-                        token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MzI3MjU2ODIsImlhdCI6MTYwNjgwNTY4MiwicGhvbmUiOiIxMzUzNTAzMjkzNiJ9.BY-dsK8YFIofIDah7qufUJJKlPyfSdhzt4cBmRx1CCo'
+                        token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MzI3MjU2ODIsImlhdCI6MTYwNjgwNTY4MiwicGhvbmUiOiIxMzUzNTAzMjkzNiJ9.BY-dsK8YFIofIDah7qufUJJKlPyfSdhzt4cBmRx1CCo',
+                        redirect: 'http://localhost:8081'
                     }
                 })
             } else {
@@ -35,7 +38,8 @@ const Mock = (app) => {
                 res.json({
                     status: 'ok',
                     data: {
-                        token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MzI3MjU2ODIsImlhdCI6MTYwNjgwNTY4MiwicGhvbmUiOiIxMzUzNTAzMjkzNiJ9.BY-dsK8YFIofIDah7qufUJJKlPyfSdhzt4cBmRx1CCo'
+                        token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MzI3MjU2ODIsImlhdCI6MTYwNjgwNTY4MiwicGhvbmUiOiIxMzUzNTAzMjkzNiJ9.BY-dsK8YFIofIDah7qufUJJKlPyfSdhzt4cBmRx1CCo',
+                        redirect: 'http://localhost:8081'
                     }
                 })
             } else {

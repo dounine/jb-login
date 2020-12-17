@@ -9,7 +9,7 @@
     </el-row>
     <el-row type="flex" justify="center">
       <div class="welcome">
-        <span>欢迎登录JB、有问题即时反馈哟</span>
+        <span>欢迎登录JB、一个懂你的系统</span>
       </div>
     </el-row>
     <el-row style="margin-top: 30px" type="flex" justify="center">
@@ -198,6 +198,22 @@ export default {
           }
         } else {
           console.log("登录成功");
+          const urlRedirect = this.$route.query.redirect;
+          if (urlRedirect) {
+            //ur中包含跳转地扯
+            console.log("跳转到url redirect的地扯", urlRedirect);
+            window.location.href = urlRedirect;
+          } else {
+            if (window.__POWERED_BY_QIANKUN__) {
+              //是qiankun的微应用
+              localStorage.setItem("token", response.data.data.token);
+              console.log("跳转到微应用中的主应用上");
+              history.pushState({}, "/", "/");
+            } else {
+              console.log("跳转到登录返回的redirect地扯中");
+              window.location.href = response.data.data.redirect;
+            }
+          }
         }
       });
     },
