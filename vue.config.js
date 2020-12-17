@@ -1,3 +1,4 @@
+var bodyParser = require('body-parser');
 const port = 8083
 const { name } = require('./package.json')
 module.exports = {
@@ -14,6 +15,14 @@ module.exports = {
                 changeOrigin: true, // 是否改变域名
                 pathRewrite: {
                     "^/api": ""
+                },
+                onProxyReq: function (proxyReq, req, res, options) {
+                    if (req.body) {
+                        let bodyData = JSON.stringify(req.body);
+                        proxyReq.setHeader('Content-Type', 'application/json');
+                        proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+                        proxyReq.write(bodyData);
+                    }
                 }
             }
         },

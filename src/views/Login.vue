@@ -1,8 +1,6 @@
 <template>
   <div class="login">
-    <el-row style="height:100px" type="flex" justify="center">
-      
-    </el-row>
+    <el-row style="height: 100px" type="flex" justify="center"> </el-row>
     <el-row type="flex" justify="center">
       <a style="logo-wrap">
         <img :src="logo" class="logo" />
@@ -51,16 +49,22 @@
             <el-input
               style="width: 400px"
               placeholder="用户名"
+              autofocus
+              clearable
+              @change="saveUsername"
               prefix-icon="el-icon-user"
-              v-model="input2"
+              v-model="username"
             ></el-input>
           </el-row>
           <el-row style="margin-top: 24px" type="flex" justify="center">
             <el-input
               style="width: 400px"
               placeholder="密码"
+              clearable
+              type="password"
+              show-password
               prefix-icon="el-icon-lock"
-              v-model="input2"
+              v-model="password"
             ></el-input>
           </el-row>
         </div>
@@ -69,16 +73,24 @@
             <el-input
               style="width: 400px"
               placeholder="手机号"
+              clearable
+              autofocus
+              minlength="11"
+              maxlength="11"
+              @input="savePhone"
               prefix-icon="el-icon-mobile-phone"
-              v-model="input2"
+              v-model="phone"
             ></el-input>
           </el-row>
           <el-row style="margin-top: 24px" type="flex" justify="center">
             <el-input
               style="width: 250px"
               placeholder="验证码"
+              clearable
+              minlength="6"
+              maxlength="6"
               prefix-icon="el-icon-message"
-              v-model="input2"
+              v-model="message"
             ></el-input>
             <el-button style="width: 140px; margin-left: 10px">获取验证码</el-button>
           </el-row>
@@ -86,7 +98,11 @@
         <el-row style="margin-top: 10px" type="flex" justify="center">
           <div class="centerWidth">
             <el-row style="margin-top: 20px" type="flex" justify="space-between">
-              <div><el-checkbox v-model="autoLogin">自动登录</el-checkbox></div>
+              <div>
+                <el-checkbox v-model="autoLogin" @change="autoLoginChange"
+                  >自动登录</el-checkbox
+                >
+              </div>
               <div>
                 <router-link class="forget" style="color: #52c41a" to="/user/forget"
                   >忘记密码</router-link
@@ -96,7 +112,7 @@
           </div>
         </el-row>
         <el-row style="margin-top: 30px" type="flex" justify="center">
-          <el-button class="centerWidth" type="success">登 录</el-button>
+          <el-button @click="login" class="centerWidth" type="success">登 录</el-button>
         </el-row>
         <el-row type="flex" justify="center">
           <div class="centerWidth">
@@ -114,23 +130,76 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapMutations, mapState } from "vuex";
+import UserApi from "../api/user";
 export default {
   data() {
     return {
-      autoLogin: true,
       logo: require("../assets/logo.png"),
+      username: localStorage.getItem("username") || "",
+      phone: localStorage.getItem("phone") || "",
+      message: "",
+      password: "",
     };
   },
   computed: {
-    ...mapState(["theme"]),
+    ...mapState(["theme", "username", "phone"]),
+    autoLogin() {
+      return this.$store.state.autoLogin === "true";
+    },
     loginType() {
       return this.$route.params.loginType;
     },
   },
   methods: {
+    ...mapMutations(["setUsername", "setPhone"]),
+    saveUsername(value) {
+      localStorage.setItem("username", value);
+    },
+    savePhone(value) {
+      localStorage.setItem("phone", value);
+    },
+    messageChange(value) {
+      this.message = value;
+    },
+    passwordChange(value) {
+      this.password = value;
+    },
+    autoLoginChange(value) {
+      this.$store.commit("setAutoLogion", `${value}`);
+    },
     switchLoginType(loginType) {
-      this.$router.push(`/${loginType}`);
+      if (this.$route.query.redirect) {
+        this.$router.push({
+          path: `/${loginType}`,
+          query: {
+            redirect: this.$route.query.redirect,
+          },
+        });
+      } else {
+        this.$router.push(`/${loginType}`);
+      }
+    },
+    login() {
+      const loginData = {
+        loginType: this.loginType,
+        username: this.username,
+        password: this.password,
+        phone: this.phone,
+        message: this.message,
+      };
+      UserApi.login(loginData).then((response) => {
+        if (response.data.status === "fail") {
+          this.$message.error(response.data.msg);
+          if (this.loginType === "password") {
+            this.password = "";
+          } else {
+            this.message = "";
+          }
+        } else {
+          console.log("登录成功");
+        }
+      });
     },
   },
 };
@@ -142,8 +211,8 @@ export default {
   background-position: center 110px;
   background-size: 100%;
   height: 90vh;
-  margin:0;
-  padding:0;
+  margin: 0;
+  padding: 0;
 }
 .logo-wrap {
   height: 44px;

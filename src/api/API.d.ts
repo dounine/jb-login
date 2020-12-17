@@ -1,21 +1,14 @@
 declare namespace API {
-    export interface Direction {
-        name: string;
-        value: string;
+    export interface LoginData {
+        loginType: string;
+        phone?: string;
+        username?: string;
+        password?: string;
+        message?: string;
     }
-    export interface ContractType {
-        name: string;
-        value: string;
-    }
-    export interface Position {
-        name: string;
-        status: string;
-        directions: array<Direction>;
-        contractTypes: array<ContractType>;
-        icon?: any;
-    }
-    export interface PositionData {
-        data: array<Position>;
+    export interface UserData {
+        data?: string;
+        msg?: string;
         code: string;
     }
 }
