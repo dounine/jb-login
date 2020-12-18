@@ -227,10 +227,6 @@ export default {
         ],
       },
       logo: require("../assets/logo.png"),
-      username: localStorage.getItem("username") || "",
-      phone: localStorage.getItem("phone") || "",
-      message: "",
-      password: "",
     };
   },
   computed: {

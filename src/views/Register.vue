@@ -359,10 +359,6 @@ export default {
       },
       agreementTxt: "<<用户协议>>",
       logo: require("../assets/logo.png"),
-      agreement: false,
-      email: "",
-      emailPassword: "",
-      emailConfirmPassword: "",
     };
   },
   computed: {
