@@ -25,7 +25,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/login',
-    redirect: '/login/phone'
+    redirect: '/login/account'
   },
   {
     path: '/register',

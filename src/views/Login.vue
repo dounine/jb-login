@@ -25,85 +25,98 @@
                   : ''
               "
             >
-              帐号密码登录
+              帐号登录
             </div>
           </div>
           <div class="accountWrap">
             <div
               class="account"
-              @click="switchLoginType('phone')"
+              @click="switchLoginType('code')"
               :style="
-                loginType === 'phone'
+                loginType === 'code'
                   ? 'color:' + theme + ';border-bottom:2px solid ' + theme
                   : ''
               "
             >
-              手机号登录
+              验证码登录
             </div>
           </div>
         </el-row>
       </el-col>
       <el-col style="margin-top: 16px">
         <div v-if="loginType === 'account'">
-          <el-row type="flex" justify="center">
-            <el-input
-              style="width: 400px"
-              placeholder="用户名"
-              autofocus
-              clearable
-              @change="saveUsername"
-              prefix-icon="el-icon-user"
-              v-model="username"
-            ></el-input>
-          </el-row>
-          <el-row style="margin-top: 24px" type="flex" justify="center">
-            <el-input
-              style="width: 400px"
-              placeholder="密码"
-              clearable
-              type="password"
-              show-password
-              prefix-icon="el-icon-lock"
-              v-model="password"
-            ></el-input>
-          </el-row>
+          <el-form :model="accountData" :rules="accountRules" ref="accountData">
+            <el-row type="flex" justify="center">
+              <el-form-item prop="username">
+                <el-input
+                  style="width: 400px"
+                  placeholder="手机号或邮箱"
+                  autofocus
+                  clearable
+                  prefix-icon="el-icon-user"
+                  v-model="accountData.username"
+                ></el-input>
+              </el-form-item>
+            </el-row>
+            <el-row type="flex" justify="center">
+              <el-form-item prop="password">
+                <el-input
+                  style="width: 400px"
+                  placeholder="密码"
+                  clearable
+                  type="password"
+                  maxlength="20"
+                  show-password
+                  prefix-icon="el-icon-lock"
+                  v-model="accountData.password"
+                ></el-input>
+              </el-form-item>
+            </el-row>
+          </el-form>
         </div>
-        <div v-if="loginType === 'phone'">
-          <el-row type="flex" justify="center">
-            <el-input
-              style="width: 400px"
-              placeholder="手机号"
-              clearable
-              autofocus
-              minlength="11"
-              maxlength="11"
-              @input="savePhone"
-              prefix-icon="el-icon-mobile-phone"
-              v-model="phone"
-            ></el-input>
-          </el-row>
-          <el-row style="margin-top: 24px" type="flex" justify="center">
-            <el-input
-              style="width: 250px"
-              placeholder="验证码"
-              clearable
-              minlength="6"
-              maxlength="6"
-              prefix-icon="el-icon-message"
-              v-model="message"
-            ></el-input>
-            <el-button style="width: 140px; margin-left: 10px">获取验证码</el-button>
-          </el-row>
+        <div v-if="loginType === 'code'">
+          <el-form :model="codeData" :rules="codeRules" ref="codeData">
+            <el-row type="flex" justify="center">
+              <el-form-item prop="username">
+                <el-input
+                  style="width: 400px"
+                  placeholder="手机号或邮箱"
+                  clearable
+                  autofocus
+                  prefix-icon="el-icon-mobile-phone"
+                  v-model="codeData.username"
+                ></el-input>
+              </el-form-item>
+            </el-row>
+            <el-row type="flex" justify="center">
+              <el-form-item prop="message">
+                <el-input
+                  style="width: 250px"
+                  placeholder="验证码"
+                  clearable
+                  maxlength="6"
+                  prefix-icon="el-icon-message"
+                  v-model="codeData.message"
+                ></el-input>
+                <el-button
+                  :disabled="!codeEnable()"
+                  @click="getCode"
+                  style="width: 140px; margin-left: 10px"
+                  >{{ codeData.codeText }}</el-button
+                >
+              </el-form-item>
+            </el-row>
+          </el-form>
         </div>
-        <el-row style="margin-top: 10px" type="flex" justify="center">
+        <el-row type="flex" justify="center">
           <div class="centerWidth">
-            <el-row style="margin-top: 20px" type="flex" justify="space-between">
+            <el-row type="flex" justify="space-between">
               <div>
                 <el-checkbox v-model="autoLogin" @change="autoLoginChange"
                   >自动登录</el-checkbox
                 >
               </div>
-              <div>
+              <div v-if="loginType === 'account'">
                 <router-link class="forget" style="color: #52c41a" to="/user/forget"
                   >忘记密码</router-link
                 >
@@ -112,7 +125,9 @@
           </div>
         </el-row>
         <el-row style="margin-top: 30px" type="flex" justify="center">
-          <el-button @click="login" class="centerWidth" type="success">登 录</el-button>
+          <el-button @click="submitForm" class="centerWidth" type="success"
+            >登 录</el-button
+          >
         </el-row>
         <el-row type="flex" justify="center">
           <div class="centerWidth">
@@ -135,6 +150,82 @@ import UserApi from "../api/user";
 export default {
   data() {
     return {
+      codeTimeInterval: null,
+      accountData: {
+        username: "",
+        password: "",
+      },
+      codeData: {
+        username: "",
+        message: "",
+        codeText: "获取验证码",
+      },
+      accountRules: {
+        username: [
+          {
+            required: true,
+            message: "请输入手机或邮箱帐号码",
+            trigger: "blur",
+          },
+          {
+            message: "请输入正确的手机或者邮箱号码",
+            pattern:
+              "(1(3[0-9]|4[5,7]|5[0,1,2,3,5,6,7,8,9]|6[2,5,6,7]|7[0,1,7,8]|8[0-9]|9[1,8,9])\\d{8}$)|(([A-Za-z0-9_\\-\\.])+\\@([A-Za-z0-9_\\-\\.])+\\.([A-Za-z]{2,4}))",
+            trigger: "blur",
+          },
+        ],
+        password: [
+          {
+            required: true,
+            message: "请输入密码",
+            trigger: "blur",
+          },
+          {
+            message: "密码强度需要字母+数字组合",
+            pattern: "^(([a-z]+[0-9]+)|([0-9]+[a-z]+))[a-z0-9]*$",
+            trigger: "blur",
+          },
+          {
+            message: "密码长度为6~20位",
+            min: 6,
+            max: 20,
+            trigger: "blur",
+          },
+        ],
+      },
+      codeRules: {
+        username: [
+          {
+            required: true,
+            message: "请输入手机或邮箱帐号码",
+            trigger: "blur",
+          },
+          {
+            message: "请输入正确的手机或者邮箱号码",
+            pattern:
+              "(1(3[0-9]|4[5,7]|5[0,1,2,3,5,6,7,8,9]|6[2,5,6,7]|7[0,1,7,8]|8[0-9]|9[1,8,9])\\d{8}$)|(([A-Za-z0-9_\\-\\.])+\\@([A-Za-z0-9_\\-\\.])+\\.([A-Za-z]{2,4}))",
+            trigger: "blur",
+          },
+        ],
+        message: [
+          {
+            required: true,
+            message: "请输入验证码",
+            trigger: "blur",
+          },
+          {
+            message: "长度为6位",
+            min: 6,
+            max: 6,
+            trigger: "blur",
+          },
+          {
+            message: "只能为数字",
+            pattern: "^\\d{6}$",
+            trigger: "blur",
+          },
+        ],
+      },
       logo: require("../assets/logo.png"),
       username: localStorage.getItem("username") || "",
       phone: localStorage.getItem("phone") || "",
@@ -151,8 +242,52 @@ export default {
       return this.$route.params.loginType;
     },
   },
+  created() {
+    if (localStorage.getItem("codeTime")) {
+      this.codeTimeInterval = setInterval(this.changeCodeText, 1000);
+      this.changeCodeText();
+    }
+    this.codeData.username = localStorage.getItem("username") || "";
+  },
   methods: {
     ...mapMutations(["setUsername", "setPhone"]),
+    async submitForm() {
+      await this.$nextTick();
+      this.$refs[this.$route.params.loginType + "Data"].validate((valid) => {
+        if (valid) {
+          this.login();
+          console.log("提交注册");
+        }
+      });
+    },
+    codeEnable() {
+      if (this.codeTimeInterval != null) {
+        return false;
+      } else {
+        return new RegExp(this.codeRules.username[1].pattern).test(
+          this.codeData.username
+        );
+      }
+    },
+    changeCodeText() {
+      const between = (new Date().getTime() - localStorage.getItem("codeTime")) / 1000;
+      if (60 - between < 1) {
+        if (this.codeTimeInterval) {
+          clearInterval(this.codeTimeInterval);
+        }
+        localStorage.removeItem("codeTime");
+        this.codeData.codeText = "获取验证码";
+        this.codeTimeInterval = null;
+      } else {
+        this.codeData.codeText = `${Math.round(60 - between)}秒后重新获取`;
+      }
+    },
+    getCode() {
+      localStorage.setItem("codeTime", new Date().getTime());
+      localStorage.setItem("username", this.codeData.username);
+      this.codeTimeInterval = setInterval(this.changeCodeText, 1000);
+      this.changeCodeText();
+    },
     saveUsername(value) {
       localStorage.setItem("username", value);
     },
