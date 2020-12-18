@@ -4,7 +4,7 @@
     <el-row type="flex" justify="center">
       <a style="logo-wrap">
         <img :src="logo" class="logo" />
-        <span class="logo-txt">JB Login</span>
+        <span class="logo-txt">JB Forget</span>
       </a>
     </el-row>
     <el-row type="flex" justify="center">
@@ -45,7 +45,7 @@
       </el-col>
       <el-col style="margin-top: 16px">
         <div v-if="forgetType === 'phone'">
-          <el-form :model="accountData" :rules="accountRules" ref="accountData">
+          <el-form :model="phoneData" :rules="phoneRules" ref="phoneData">
             <el-row type="flex" justify="center">
               <el-form-item prop="phone">
                 <el-input
@@ -155,7 +155,7 @@
           </el-form>
         </div>
         <el-row type="flex" justify="center">
-          <el-button @click="login" class="centerWidth" type="success">修改密码</el-button>
+          <el-button @click="submitForm" class="centerWidth" type="success">修改密码</el-button>
         </el-row>
         <el-row type="flex" justify="center">
           <div class="centerWidth">
@@ -183,10 +183,14 @@ export default {
       phoneData: {
         phone: "",
         message: "",
+        password: "",
+        checkPassword: "",
       },
       emailData:{
         email: "",
         message: "",
+        password: "",
+        checkPassword: "",
       },
       phoneRules: {
         phone: [
@@ -217,6 +221,38 @@ export default {
           {
             message: "验证码只能为数字",
             pattern: "^\\d{6}$",
+            trigger: "blur",
+          },
+        ],
+        password: [
+          {
+            required: true,
+            message: "请输入密码",
+            trigger: "blur",
+          },
+          {
+            message: "密码强度需要字母+数字组合",
+            pattern: "^(([a-z]+[0-9]+)|([0-9]+[a-z]+))[a-z0-9]*$",
+            trigger: "blur",
+          },
+          {
+            message: "密码长度为6~20位",
+            min: 6,
+            max: 20,
+            trigger: "blur",
+          },
+        ],
+        checkPassword: [
+          {
+            validator: (rule, value, callback) => {
+              if (value === "") {
+                callback(new Error("请再次确认输入的密码"));
+              } else if (value !== this.phoneData.password) {
+                callback(new Error("两次输入密码不一致!"));
+              } else {
+                callback();
+              }
+            },
             trigger: "blur",
           },
         ],
@@ -253,6 +289,38 @@ export default {
             trigger: "blur",
           },
         ],
+        password: [
+          {
+            required: true,
+            message: "请输入密码",
+            trigger: "blur",
+          },
+          {
+            message: "密码强度需要字母+数字组合",
+            pattern: "^(([a-z]+[0-9]+)|([0-9]+[a-z]+))[a-z0-9]*$",
+            trigger: "blur",
+          },
+          {
+            message: "密码长度为6~20位",
+            min: 6,
+            max: 20,
+            trigger: "blur",
+          },
+        ],
+        checkPassword: [
+          {
+            validator: (rule, value, callback) => {
+              if (value === "") {
+                callback(new Error("请再次确认输入的密码"));
+              } else if (value !== this.phoneData.password) {
+                callback(new Error("两次输入密码不一致!"));
+              } else {
+                callback();
+              }
+            },
+            trigger: "blur",
+          },
+        ],
       },
       logo: require("../assets/logo.png"),
     };
@@ -268,6 +336,14 @@ export default {
   },
   methods: {
     ...mapMutations(["setUsername", "setPhone"]),
+    async submitForm() {
+      await this.$nextTick();
+      this.$refs[this.$route.params.forgetType + "Data"].validate((valid) => {
+        if (valid) {
+          console.log("修改密码");
+        }
+      });
+    },
     saveUsername(value) {
       localStorage.setItem("username", value);
     },
