@@ -18,7 +18,7 @@ const Mock = (app) => {
     })
     app.post('/user/login', function (req, res) {
         let body = req.body;
-        if (body.loginType === 'password') {
+        if (body.loginType === 'account') {
             if (body.username === 'admin' && body.password === 'admin') {
                 res.json({
                     status: 'ok',

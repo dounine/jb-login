@@ -9,7 +9,7 @@
     </el-row>
     <el-row type="flex" justify="center">
       <div class="welcome">
-        <span>欢迎登录JB、一个懂你的系统</span>
+        <span>欢迎找回JB帐号、一个懂你的系统</span>
       </div>
     </el-row>
     <el-row style="margin-top: 30px" type="flex" justify="center">
@@ -18,9 +18,9 @@
           <div class="accountWrap">
             <div
               class="account"
-              @click="switchLoginType('account')"
+              @click="switchLoginType('password')"
               :style="
-                loginType === 'account'
+                loginType === 'password'
                   ? 'color:' + theme + ';border-bottom:2px solid ' + theme
                   : ''
               "
@@ -31,9 +31,9 @@
           <div class="accountWrap">
             <div
               class="account"
-              @click="switchLoginType('phone')"
+              @click="switchLoginType('message')"
               :style="
-                loginType === 'phone'
+                loginType === 'message'
                   ? 'color:' + theme + ';border-bottom:2px solid ' + theme
                   : ''
               "
@@ -44,7 +44,7 @@
         </el-row>
       </el-col>
       <el-col style="margin-top: 16px">
-        <div v-if="loginType === 'account'">
+        <div v-if="loginType === 'password'">
           <el-row type="flex" justify="center">
             <el-input
               style="width: 400px"
@@ -68,7 +68,7 @@
             ></el-input>
           </el-row>
         </div>
-        <div v-if="loginType === 'phone'">
+        <div v-if="loginType === 'message'">
           <el-row type="flex" justify="center">
             <el-input
               style="width: 400px"
@@ -119,7 +119,7 @@
             <el-row style="margin-top: 20px" type="flex" justify="space-between">
               <div></div>
               <div>
-                <router-link class="forget" to="/register">注册帐户</router-link>
+                <router-link class="forget" to="/user/register">注册帐户</router-link>
               </div>
             </el-row>
           </div>
@@ -171,13 +171,13 @@ export default {
     switchLoginType(loginType) {
       if (this.$route.query.redirect) {
         this.$router.push({
-          path: `/login/${loginType}`,
+          path: `/${loginType}`,
           query: {
             redirect: this.$route.query.redirect,
           },
         });
       } else {
-        this.$router.push(`/login/${loginType}`);
+        this.$router.push(`/${loginType}`);
       }
     },
     login() {
@@ -191,7 +191,7 @@ export default {
       UserApi.login(loginData).then((response) => {
         if (response.data.status === "fail") {
           this.$message.error(response.data.msg);
-          if (this.loginType === "account") {
+          if (this.loginType === "password") {
             this.password = "";
           } else {
             this.message = "";
