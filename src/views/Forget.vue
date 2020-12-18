@@ -312,7 +312,7 @@ export default {
             validator: (rule, value, callback) => {
               if (value === "") {
                 callback(new Error("请再次确认输入的密码"));
-              } else if (value !== this.phoneData.password) {
+              } else if (value !== this.emailData.password) {
                 callback(new Error("两次输入密码不一致!"));
               } else {
                 callback();
