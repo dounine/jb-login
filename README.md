@@ -1,4 +1,4 @@
-![](https://github.com/dounine/jb-login/workflows/Node.js%20CI/badge.svg) ![](https://img.shields.io/github/license/dounine/jb-login)
+![](https://github.com/dounine/jb-user/workflows/Node.js%20CI/badge.svg) ![](https://img.shields.io/github/license/dounine/jb-user)
 
-# jb-login
-login component mode for jb-base
+# jb-user
+user component mode for jb-base
