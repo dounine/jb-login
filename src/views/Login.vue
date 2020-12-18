@@ -117,7 +117,7 @@
                 >
               </div>
               <div v-if="loginType === 'account'">
-                <router-link class="forget" style="color: #52c41a" to="/user/forget"
+                <router-link class="forget" style="color: #52c41a" to="/forget"
                   >忘记密码</router-link
                 >
               </div>

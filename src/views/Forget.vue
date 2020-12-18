@@ -9,7 +9,7 @@
     </el-row>
     <el-row type="flex" justify="center">
       <div class="welcome">
-        <span>欢迎找回JB帐号、一个懂你的系统</span>
+        <span>欢迎找回JB帐号、别把懂你的系统弄丢了</span>
       </div>
     </el-row>
     <el-row style="margin-top: 30px" type="flex" justify="center">
@@ -18,108 +18,153 @@
           <div class="accountWrap">
             <div
               class="account"
-              @click="switchLoginType('password')"
+              @click="switchForgetType('phone')"
               :style="
-                loginType === 'password'
+                forgetType === 'phone'
                   ? 'color:' + theme + ';border-bottom:2px solid ' + theme
                   : ''
               "
             >
-              帐号密码登录
+              手机号找回
             </div>
           </div>
           <div class="accountWrap">
             <div
               class="account"
-              @click="switchLoginType('message')"
+              @click="switchForgetType('email')"
               :style="
-                loginType === 'message'
+                forgetType === 'email'
                   ? 'color:' + theme + ';border-bottom:2px solid ' + theme
                   : ''
               "
             >
-              手机号登录
+              邮箱找回
             </div>
           </div>
         </el-row>
       </el-col>
       <el-col style="margin-top: 16px">
-        <div v-if="loginType === 'password'">
-          <el-row type="flex" justify="center">
-            <el-input
-              style="width: 400px"
-              placeholder="用户名"
-              autofocus
-              clearable
-              @change="saveUsername"
-              prefix-icon="el-icon-user"
-              v-model="username"
-            ></el-input>
-          </el-row>
-          <el-row style="margin-top: 24px" type="flex" justify="center">
-            <el-input
-              style="width: 400px"
-              placeholder="密码"
-              clearable
-              type="password"
-              show-password
-              prefix-icon="el-icon-lock"
-              v-model="password"
-            ></el-input>
-          </el-row>
-        </div>
-        <div v-if="loginType === 'message'">
-          <el-row type="flex" justify="center">
-            <el-input
-              style="width: 400px"
-              placeholder="手机号"
-              clearable
-              autofocus
-              minlength="11"
-              maxlength="11"
-              @input="savePhone"
-              prefix-icon="el-icon-mobile-phone"
-              v-model="phone"
-            ></el-input>
-          </el-row>
-          <el-row style="margin-top: 24px" type="flex" justify="center">
-            <el-input
-              style="width: 250px"
-              placeholder="验证码"
-              clearable
-              minlength="6"
-              maxlength="6"
-              prefix-icon="el-icon-message"
-              v-model="message"
-            ></el-input>
-            <el-button style="width: 140px; margin-left: 10px">获取验证码</el-button>
-          </el-row>
-        </div>
-        <el-row style="margin-top: 10px" type="flex" justify="center">
-          <div class="centerWidth">
-            <el-row style="margin-top: 20px" type="flex" justify="space-between">
-              <div>
-                <el-checkbox v-model="autoLogin" @change="autoLoginChange"
-                  >自动登录</el-checkbox
-                >
-              </div>
-              <div>
-                <router-link class="forget" style="color: #52c41a" to="/user/forget"
-                  >忘记密码</router-link
-                >
-              </div>
+        <div v-if="forgetType === 'phone'">
+          <el-form :model="accountData" :rules="accountRules" ref="accountData">
+            <el-row type="flex" justify="center">
+              <el-form-item prop="phone">
+                <el-input
+                  style="width: 400px"
+                  placeholder="手机号"
+                  autofocus
+                  clearable
+                  prefix-icon="el-icon-user"
+                  v-model="phoneData.phone"
+                ></el-input>
+              </el-form-item>
             </el-row>
-          </div>
-        </el-row>
-        <el-row style="margin-top: 30px" type="flex" justify="center">
-          <el-button @click="login" class="centerWidth" type="success">登 录</el-button>
+            <el-row type="flex" justify="center">
+              <el-form-item prop="message">
+                <el-input
+                  style="width: 250px"
+                  placeholder="验证码"
+                  clearable
+                  minlength="6"
+                  maxlength="6"
+                  prefix-icon="el-icon-message"
+                  v-model="phoneData.message"
+                ></el-input>
+                <el-button style="width: 140px; margin-left: 10px">获取验证码</el-button>
+              </el-form-item>
+            </el-row>
+            <el-row type="flex" justify="center">
+              <el-form-item prop="password">
+                <el-input
+                  style="width: 400px"
+                  placeholder="新密码"
+                  autofocus
+                  clearable
+                  prefix-icon="el-icon-lock"
+                  v-model="phoneData.phone"
+                ></el-input>
+              </el-form-item>
+            </el-row>
+            <el-row type="flex" justify="center">
+              <el-form-item prop="checkPassword">
+                <el-input
+                  style="width: 400px"
+                  placeholder="确认新密码"
+                  autofocus
+                  clearable
+                  prefix-icon="el-icon-lock"
+                  v-model="phoneData.checkPassword"
+                ></el-input>
+              </el-form-item>
+            </el-row>
+          </el-form>
+        </div>
+        <div v-if="forgetType === 'email'">
+          <el-form :model="emailData" :rules="emailRules" ref="emailData">
+            <el-row type="flex" justify="center">
+              <el-form-item prop="email">
+                <el-input
+                  style="width: 400px"
+                  placeholder="邮箱"
+                  clearable
+                  autofocus
+                  minlength="11"
+                  maxlength="11"
+                  prefix-icon="el-icon-mobile-phone"
+                  v-model="emailData.email"
+                ></el-input>
+              </el-form-item>
+            </el-row>
+            <el-row type="flex" justify="center">
+              <el-form-item prop="email">
+                <el-input
+                  style="width: 250px"
+                  placeholder="验证码"
+                  clearable
+                  minlength="6"
+                  maxlength="6"
+                  prefix-icon="el-icon-message"
+                  v-model="emailData.message"
+                ></el-input>
+                <el-button style="width: 140px; margin-left: 10px">获取验证码</el-button>
+              </el-form-item>
+            </el-row>
+            <el-row type="flex" justify="center">
+              <el-form-item prop="password">
+                <el-input
+                  style="width: 400px"
+                  placeholder="新密码"
+                  autofocus
+                  clearable
+                  prefix-icon="el-icon-lock"
+                  v-model="emailData.phone"
+                ></el-input>
+              </el-form-item>
+            </el-row>
+            <el-row type="flex" justify="center">
+              <el-form-item prop="checkPassword">
+                <el-input
+                  style="width: 400px"
+                  placeholder="确认新密码"
+                  autofocus
+                  clearable
+                  prefix-icon="el-icon-lock"
+                  v-model="emailData.checkPassword"
+                ></el-input>
+              </el-form-item>
+            </el-row>
+          </el-form>
+        </div>
+        <el-row type="flex" justify="center">
+          <el-button @click="login" class="centerWidth" type="success">修改密码</el-button>
         </el-row>
         <el-row type="flex" justify="center">
           <div class="centerWidth">
             <el-row style="margin-top: 20px" type="flex" justify="space-between">
-              <div></div>
               <div>
-                <router-link class="forget" to="/user/register">注册帐户</router-link>
+                <router-link class="forget" to="/login">登录帐户</router-link>
+              </div>
+              <div>
+                <router-link class="forget" to="/register">注册帐户</router-link>
               </div>
             </el-row>
           </div>
@@ -135,11 +180,81 @@ import UserApi from "../api/user";
 export default {
   data() {
     return {
+      phoneData: {
+        phone: "",
+        message: "",
+      },
+      emailData:{
+        email: "",
+        message: "",
+      },
+      phoneRules: {
+        phone: [
+          {
+            required: true,
+            message: "请输入手机号码",
+            trigger: "blur",
+          },
+          {
+            message: "请输入正确的手机",
+            pattern:
+              "^1(3[0-9]|4[5,7]|5[0,1,2,3,5,6,7,8,9]|6[2,5,6,7]|7[0,1,7,8]|8[0-9]|9[1,8,9])\\d{8}$",
+            trigger: "blur",
+          },
+        ],
+        message: [
+          {
+            required: true,
+            message: "请输入验证码",
+            trigger: "blur",
+          },
+          {
+            min: 6,
+            max: 6,
+            message: "请输入6位验证码",
+            trigger: "blur",
+          },
+          {
+            message: "验证码只能为数字",
+            pattern: "^\\d{6}$",
+            trigger: "blur",
+          },
+        ],
+      },
+      emailRules: {
+        email: [
+          {
+            required: true,
+            message: "请输入邮箱号码",
+            trigger: "blur",
+          },
+          {
+            message: "请输入正确的邮箱号码",
+            pattern:
+              "^([A-Za-z0-9_\\-\\.])+\\@([A-Za-z0-9_\\-\\.])+\\.([A-Za-z]{2,4})$",
+            trigger: "blur",
+          },
+        ],
+        message: [
+          {
+            required: true,
+            message: "请输入验证码",
+            trigger: "blur",
+          },
+          {
+            min: 6,
+            max: 6,
+            message: "请输入6位验证码",
+            trigger: "blur",
+          },
+          {
+            message: "验证码只能为数字",
+            pattern: "^\\d{6}$",
+            trigger: "blur",
+          },
+        ],
+      },
       logo: require("../assets/logo.png"),
-      username: localStorage.getItem("username") || "",
-      phone: localStorage.getItem("phone") || "",
-      message: "",
-      password: "",
     };
   },
   computed: {
@@ -147,8 +262,8 @@ export default {
     autoLogin() {
       return this.$store.state.autoLogin === "true";
     },
-    loginType() {
-      return this.$route.params.loginType;
+    forgetType() {
+      return this.$route.params.forgetType;
     },
   },
   methods: {
@@ -168,21 +283,21 @@ export default {
     autoLoginChange(value) {
       this.$store.commit("setAutoLogion", `${value}`);
     },
-    switchLoginType(loginType) {
+    switchForgetType(forgetType) {
       if (this.$route.query.redirect) {
         this.$router.push({
-          path: `/${loginType}`,
+          path: `/forget/${forgetType}`,
           query: {
             redirect: this.$route.query.redirect,
           },
         });
       } else {
-        this.$router.push(`/${loginType}`);
+        this.$router.push(`/forget/${forgetType}`);
       }
     },
     login() {
       const loginData = {
-        loginType: this.loginType,
+        forgetType: this.forgetType,
         username: this.username,
         password: this.password,
         phone: this.phone,
@@ -191,7 +306,7 @@ export default {
       UserApi.login(loginData).then((response) => {
         if (response.data.status === "fail") {
           this.$message.error(response.data.msg);
-          if (this.loginType === "password") {
+          if (this.forgetType === "password") {
             this.password = "";
           } else {
             this.message = "";

@@ -110,7 +110,7 @@
                         <router-link
                           class="forget"
                           style="color: #20a0ff; margin-left: 10px; font-weight: 700"
-                          to="/user/agreement"
+                          to="/agreement"
                           >{{ agreementTxt }}</router-link
                         >
                       </el-checkbox-group>
@@ -174,7 +174,7 @@
                         <router-link
                           class="forget"
                           style="color: #20a0ff; margin-left: 10px; font-weight: 700"
-                          to="/user/agreement"
+                          to="/agreement"
                           >{{ agreementTxt }}</router-link
                         >
                       </el-checkbox-group>
