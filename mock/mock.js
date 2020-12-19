@@ -48,6 +48,38 @@ const Mock = (app) => {
             })
         }
     })
+    app.post('/user/forget', function (req, res) {
+        let body = req.body;
+        if (body.loginType === 'code') {
+            if (body.email === 'admin@qq.com' && body.code === '123456') {
+                res.json({
+                    status: 'ok',
+                    data: {
+                        redirect: '/forget/success'
+                    }
+                })
+            } else {
+                res.json({
+                    status: 'fail',
+                    msg: '修改密码失败、请检查验证码是否正确',
+                })
+            }
+        } else {
+            if (body.phone === 'admin@qq.com' && body.code === '123456') {
+                res.json({
+                    status: 'ok',
+                    data: {
+                        redirect: '/forget/success'
+                    }
+                })
+            } else {
+                res.json({
+                    status: 'fail',
+                    msg: '修改密码失败、请请检查验证码是否正',
+                })
+            }
+        }
+    })
     app.get('/position/virtual/list', function (req, res) {
         res.json({
             status: 'ok',
