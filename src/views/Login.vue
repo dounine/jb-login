@@ -51,6 +51,7 @@
                 <el-input
                   style="width: 400px"
                   placeholder="手机号或邮箱"
+                  @change="saveUsername"
                   autofocus
                   clearable
                   prefix-icon="el-icon-user"
@@ -83,20 +84,21 @@
                   placeholder="手机号或邮箱"
                   clearable
                   autofocus
+                  @change="saveUsername"
                   prefix-icon="el-icon-mobile-phone"
                   v-model="codeData.username"
                 ></el-input>
               </el-form-item>
             </el-row>
             <el-row type="flex" justify="center">
-              <el-form-item prop="message">
+              <el-form-item prop="code">
                 <el-input
                   style="width: 250px"
                   placeholder="验证码"
                   clearable
                   maxlength="6"
                   prefix-icon="el-icon-message"
-                  v-model="codeData.message"
+                  v-model="codeData.code"
                 ></el-input>
                 <el-button
                   :disabled="!codeEnable()"
@@ -157,7 +159,7 @@ export default {
       },
       codeData: {
         username: "",
-        message: "",
+        code: "",
         codeText: "获取验证码",
       },
       accountRules: {
@@ -207,7 +209,7 @@ export default {
             trigger: "blur",
           },
         ],
-        message: [
+        code: [
           {
             required: true,
             message: "请输入验证码",
@@ -244,6 +246,7 @@ export default {
       this.changeCodeText();
     }
     this.codeData.username = localStorage.getItem("username") || "";
+    this.accountData.username = localStorage.getItem("username") || "";
   },
   methods: {
     ...mapMutations(["setUsername", "setPhone"]),
@@ -251,8 +254,7 @@ export default {
       await this.$nextTick();
       this.$refs[this.$route.params.loginType + "Data"].validate((valid) => {
         if (valid) {
-          this.login();
-          console.log("提交注册");
+          this.login()
         }
       });
     },
@@ -287,15 +289,6 @@ export default {
     saveUsername(value) {
       localStorage.setItem("username", value);
     },
-    savePhone(value) {
-      localStorage.setItem("phone", value);
-    },
-    messageChange(value) {
-      this.message = value;
-    },
-    passwordChange(value) {
-      this.password = value;
-    },
     autoLoginChange(value) {
       this.$store.commit("setAutoLogion", `${value}`);
     },
@@ -312,20 +305,25 @@ export default {
       }
     },
     login() {
-      const loginData = {
-        loginType: this.loginType,
-        username: this.username,
-        password: this.password,
-        phone: this.phone,
-        message: this.message,
-      };
+      const loginData =
+        this.loginType === "code"
+          ? {
+              loginType: this.loginType,
+              username: this.codeData.username,
+              code: this.codeData.code,
+            }
+          : {
+              loginType: this.loginType,
+              username: this.username,
+              password: this.password,
+            };
       UserApi.login(loginData).then((response) => {
         if (response.data.status === "fail") {
           this.$message.error(response.data.msg);
           if (this.loginType === "account") {
-            this.password = "";
+            this.accountData.password = "";
           } else {
-            this.message = "";
+            this.codeData.code = "";
           }
         } else {
           console.log("登录成功");

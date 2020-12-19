@@ -4,7 +4,7 @@ declare namespace API {
         phone?: string;
         username?: string;
         password?: string;
-        message?: string;
+        code?: string;
     }
     export interface UserData {
         data?: string;

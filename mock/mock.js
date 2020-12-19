@@ -18,8 +18,8 @@ const Mock = (app) => {
     })
     app.post('/user/login', function (req, res) {
         let body = req.body;
-        if (body.loginType === 'account') {
-            if (body.username === 'admin' && body.password === 'admin') {
+        if (body.loginType === 'code') {
+            if (body.username === 'admin@qq.com' && body.code === '123456') {
                 res.json({
                     status: 'ok',
                     data: {
@@ -30,24 +30,22 @@ const Mock = (app) => {
             } else {
                 res.json({
                     status: 'fail',
-                    msg: '登录失败、请检查帐号密码',
+                    msg: '登录失败、请检查验证码是否正确',
                 })
             }
+        } else if (body.username === 'admin@qq.com' && body.password === 'admin123') {
+            res.json({
+                status: 'ok',
+                data: {
+                    token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MzI3MjU2ODIsImlhdCI6MTYwNjgwNTY4MiwicGhvbmUiOiIxMzUzNTAzMjkzNiJ9.BY-dsK8YFIofIDah7qufUJJKlPyfSdhzt4cBmRx1CCo',
+                    redirect: 'http://localhost:8081'
+                }
+            })
         } else {
-            if (body.phone === '11111111111' && body.message === '123') {
-                res.json({
-                    status: 'ok',
-                    data: {
-                        token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MzI3MjU2ODIsImlhdCI6MTYwNjgwNTY4MiwicGhvbmUiOiIxMzUzNTAzMjkzNiJ9.BY-dsK8YFIofIDah7qufUJJKlPyfSdhzt4cBmRx1CCo',
-                        redirect: 'http://localhost:8081'
-                    }
-                })
-            } else {
-                res.json({
-                    status: 'fail',
-                    msg: '验证码错误、请检查',
-                })
-            }
+            res.json({
+                status: 'fail',
+                msg: '登录失败、请检查帐号密码',
+            })
         }
     })
     app.get('/position/virtual/list', function (req, res) {
