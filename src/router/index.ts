@@ -50,7 +50,7 @@ const routes: Array<RouteRecordRaw> = [
 
 declare const window: any;
 const router = createRouter({
-  history: createWebHistory(window.__POWERED_BY_QIANKUN__ ? '/' : '/'),
+  history: createWebHistory(window.__POWERED_BY_QIANKUN__ ? '/user' : '/'),
   routes
 })
 
